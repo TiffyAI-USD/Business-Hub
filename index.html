@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Webstore Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e6e6e6}
+:root{--gold:#d4a373;--gold2:#f1b86b;--whatsapp:#25D366}
+
+header{
+  min-height:80vh; background-size:cover; background-position:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; position:relative;
+}
+header::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+header *{position:relative;z-index:2}
+.logo{ max-width:180px; border-radius:16px; border:3px solid var(--gold); margin-bottom:1rem; }
+h1{font-family:'Bebas Neue', sans-serif;font-size:4rem;color:var(--gold)}
+
+#menu{max-width:1200px;margin:auto;padding:4rem 5%}
+.section-title{ font-family:'Bebas Neue'; font-size:2.4rem; color:var(--gold); margin:2rem 0 1rem; }
+.menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.2rem; }
+.menu-item{ background:#0f0f0f; border-radius:12px; border:1px solid #222; overflow:hidden; position: relative; }
+
+.marketing-active .menu-item { border: 1px solid var(--gold); transform: scale(1.02); }
+.badge { position: absolute; top: 15px; left: 15px; padding: 5px 12px; border-radius: 4px; z-index: 4; font-weight:bold; font-size: 0.8rem;}
+.badge-scarcity { background: #ff0000; color: #fff; }
+.badge-hot { background: var(--gold); color: #000; }
+.badge-new { background: #3498db; color: #fff; }
+
+.status-saver-btn { position: absolute; top: 10px; left: 10px; background: #25D366; color: #fff; border: none; padding: 6px 10px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; z-index: 5; }
+.menu-item img{ width:100%; height:200px; object-fit:cover; border-bottom:3px solid var(--gold); }
+.card{padding:1rem}
+.price{font-family:'Bebas Neue';color:var(--gold2); font-size:1.4rem;}
+
+.sales-log { background: #000; padding: 10px; border-radius: 8px; max-height: 200px; overflow-y: auto; margin: 10px 0; border: 1px solid #333; }
+.log-entry { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; align-items: center; }
+
+.receipt-wrap { background: #fff !important; color: #000 !important; padding: 30px; width: 100%; max-width: 400px; margin: auto; display: none; font-family: 'Courier New', monospace; border: 1px solid #ddd; }
+@media print { body * { display: none !important; } .receipt-wrap { display: block !important; } }
+
+#editor{ background:#111; border-top:3px dashed var(--gold); padding:3rem 5%; }
+.editor-block{ background:rgba(30,30,30,1); padding:1.5rem; border-radius:14px; margin-bottom:2rem; border: 1px solid #444;}
+label{display:block;margin-top:1rem;color:var(--gold); font-weight:bold;}
+input,textarea,select{ width:100%; padding:12px; background:#222; border:1px solid #444; color:#fff; border-radius:6px; margin-top:5px;}
+button{ background:linear-gradient(180deg,var(--gold),var(--gold2)); border:none; padding:12px 20px; border-radius:30px; font-weight:bold; cursor:pointer; margin-top:10px; color:#000;}
+.remove{background:#900;color:#fff}
+.cloud-btn { background: #3498db; color: white; font-size: 0.8rem; }
+
+#whatsappOrderBtn{ position:fixed; bottom:20px; right:20px; z-index:999; background:#25D366; color:#000; padding:15px 25px; border-radius:40px; font-weight:bold; text-decoration:none; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+.quote-btn { position: fixed; bottom: 85px; right: 20px; z-index: 998; background: #fff; color: #000; padding: 10px 20px; border-radius: 30px; font-weight:bold; cursor: pointer; border: 1px solid #ccc; }
+
+.modal{ position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:2000; }
+.hidden{display:none}
+.modal-glass{ width:90%; max-width:400px; background:#222; border:1px solid var(--gold); border-radius:20px; padding:2rem; color:#fff; text-align:center;}
+</style>
+</head>
+
+<body>
+<div id="paymentModal" class="modal hidden">
+  <div class="modal-glass">
+    <h2>Activation Required</h2>
+    <p style="margin:1rem 0;">To download your store, please activate your license.</p>
+    <button style="width:100%" onclick="window.open('https://wa.me/27766314246?text=ActivateStore','_blank')">Contact for Activation</button>
+    <button style="background:none; color:#aaa; margin-top:10px;" onclick="closePayment()">Cancel</button>
+  </div>
+</div>
+
+<header id="header">
+  <img id="logo" class="logo" src="">
+  <h1 id="cafeName">BUSINESS NAME</h1>
+  <p id="tagline" class="tagline">YOUR TAGLINE HERE</p>
+</header>
+
+<section id="menu"><div id="menuRender"></div></section>
+
+<div id="editor">
+  <div class="editor-block">
+    <label>Business Name</label><input id="edit_name" oninput="updateBizInfo()" value="BUSINESS NAME">
+    <label>Tagline</label><input id="edit_tagline" oninput="updateBizInfo()" value="YOUR TAGLINE HERE">
+    <label>WhatsApp (e.g. 27761234567)</label><input id="edit_wa" oninput="updateBizInfo()" value="27660000000">
+    <label>Currency</label>
+    <select id="edit_curr" onchange="updateBizInfo()">
+        <option value="ZAR">R (ZAR)</option><option value="USD">$ (USD)</option><option value="GBP">£ (GBP)</option>
+    </select>
+    <button onclick="toggleMarketingMode()" id="mktBtn" style="width:100%; margin-top:20px;">⚡ MARKETING MODE: OFF</button>
+  </div>
+
+  <div class="editor-block">
+    <h3>POS & SALES LOG</h3>
+    <div id="salesLog" class="sales-log"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button onclick="printZReading()" style="background:#eee;">📑 Z-READING</button>
+        <button onclick="resetSales()" style="background:#500; color:#fff;">🗑️ RESET LOG</button>
+    </div>
+  </div>
+
+  <div id="menuEditor"></div>
+  <button onclick="addSection()">+ ADD NEW SECTION</button>
+  <button onclick="downloadHTML()" style="width:100%; padding:25px; background:var(--gold2); font-size:1.2rem; margin-top:30px;">💾 DOWNLOAD WEBSTORE FILE</button>
+</div>
+
+<div id="receiptArea" class="receipt-wrap"></div>
+<canvas id="statusCanvas" width="1080" height="1920" style="display:none;"></canvas>
+
+<script>
+let whatsappNumber = "27660000000";
+let marketingMode = false;
+let activeCurrency = 'ZAR';
+let bizName = "BUSINESS NAME";
+let bizTagline = "YOUR TAGLINE HERE";
+const orderState = {};
+const currencyMap = { ZAR: 'R', USD: '$', GBP: '£' };
+
+let menuSections = [{ title: "Products", items: [{ name: 'Sample Item', price: 100, desc: "Description", img: "", badge: 'none', stock: 5 }] }];
+
+function updateBizInfo() {
+  bizName = document.getElementById('edit_name').value;
+  bizTagline = document.getElementById('edit_tagline').value;
+  whatsappNumber = document.getElementById('edit_wa').value;
+  activeCurrency = document.getElementById('edit_curr').value;
+  
+  document.getElementById('cafeName').textContent = bizName;
+  document.getElementById('tagline').textContent = bizTagline;
+  renderMenu();
+}
+
+function toggleMarketingMode() { 
+  marketingMode = !marketingMode; 
+  document.body.classList.toggle('marketing-active'); 
+  const btn = document.getElementById('mktBtn');
+  btn.textContent = marketingMode ? "⚡ MARKETING MODE: ACTIVE" : "⚡ MARKETING MODE: OFF";
+  btn.style.background = marketingMode ? "var(--whatsapp)" : "#eee";
+  renderMenu(); 
+}
+
+function renderMenu(){
+  const container = document.getElementById('menuRender');
+  container.innerHTML = '';
+  const sym = currencyMap[activeCurrency];
+
+  menuSections.forEach((sec, sIdx) => {
+    let html = `<h2 class="section-title">${sec.title}</h2><div class="menu-grid">`;
+    sec.items.forEach((it, iIdx) => {
+      const key = `${sIdx}-${iIdx}`;
+      const qty = orderState[key] || 0;
+      let badge = (marketingMode && it.badge !== 'none') ? `<div class="badge badge-${it.badge}">${it.badge.toUpperCase()}</div>` : '';
+      
+      html += `
+        <div class="menu-item">
+          ${badge}
+          <img src="${it.img || 'https://via.placeholder.com/300'}">
+          <div class="card">
+            <h3>${it.name}</h3>
+            <p style="font-size:0.8rem; opacity:0.7;">${it.desc}</p>
+            <div class="price">${it.price == 0 ? 'NEGOTIABLE' : sym + it.price}</div>
+            <div style="margin-top:10px;">
+              <button onclick="changeQty('${key}', -1)">−</button>
+              <strong style="margin:0 10px">${qty}</strong>
+              <button onclick="changeQty('${key}', 1)">+</button>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+    container.innerHTML += html;
+  });
+  updateFloatingButtons();
+}
+
+function changeQty(key, delta){ 
+  orderState[key] = Math.max(0, (orderState[key] || 0) + delta); 
+  renderMenu(); 
+}
+
+function updateFloatingButtons(){
+  let totalQty = 0; let grandTotal = 0; let itemsList = "";
+  const sym = currencyMap[activeCurrency];
+
+  menuSections.forEach((sec, sIdx) => {
+    sec.items.forEach((it, iIdx) => {
+      const q = orderState[`${sIdx}-${iIdx}`] || 0;
+      if(q > 0) {
+        totalQty += q;
+        grandTotal += (q * it.price);
+        itemsList += `${q}x ${it.name} - ${sym}${q*it.price}\n`;
+      }
+    });
+  });
+
+  let btn = document.getElementById('whatsappOrderBtn');
+  let qBtn = document.getElementById('quoteBtn');
+
+  if(totalQty === 0) {
+    if(btn) btn.remove(); if(qBtn) qBtn.remove();
+    return;
+  }
+
+  if(!btn) {
+    btn = document.createElement('a'); btn.id = 'whatsappOrderBtn'; document.body.appendChild(btn);
+    qBtn = document.createElement('button'); qBtn.id = 'quoteBtn'; qBtn.className = 'quote-btn';
+    document.body.appendChild(qBtn);
+  }
+
+  qBtn.textContent = "📄 PRINT QUOTE";
+  qBtn.onclick = () => { printGenericReceipt("QUOTE", itemsList, grandTotal); };
+  
+  btn.textContent = `ORDER VIA WHATSAPP (${totalQty})`;
+  const msg = encodeURIComponent(`🛍️ NEW ORDER\n\n${itemsList}\nTOTAL: ${sym}${grandTotal}`);
+  btn.href = `https://wa.me/${whatsappNumber}?text=${msg}`;
+  btn.onclick = () => { logSale(itemsList, grandTotal); };
+}
+
+function logSale(msg, total) {
+  const sales = JSON.parse(localStorage.getItem('tiffy_sales') || '[]');
+  sales.unshift({ date: new Date().toLocaleString(), total, msg });
+  localStorage.setItem('tiffy_sales', JSON.stringify(sales));
+  renderSalesLog();
+}
+
+function renderSalesLog() {
+  const log = document.getElementById('salesLog');
+  const sales = JSON.parse(localStorage.getItem('tiffy_sales') || '[]');
+  log.innerHTML = sales.map((s, i) => `
+    <div class="log-entry">
+      <span>${s.date.split(',')[1]} - ${currencyMap[activeCurrency]}${s.total}</span>
+      <button onclick='printGenericReceipt("SALE", "${s.msg.replace(/\n/g, "\\n")}", ${s.total})'>PRINT</button>
+    </div>
+  `).join('') || "No sales today.";
+}
+
+function resetSales() { if(confirm("Clear log?")) { localStorage.removeItem('tiffy_sales'); renderSalesLog(); } }
+
+function printZReading() {
+  const sales = JSON.parse(localStorage.getItem('tiffy_sales') || '[]');
+  const total = sales.reduce((a, b) => a + b.total, 0);
+  printGenericReceipt("Z-READING", `Sales Count: ${sales.length}\nGenerated: ${new Date().toLocaleTimeString()}`, total);
+}
+
+function printGenericReceipt(title, body, total) {
+  const area = document.getElementById('receiptArea');
+  area.innerHTML = `
+    <center><h2>${bizName}</h2><p>${title}</p></center>
+    <hr style="margin:10px 0">
+    <div style="white-space:pre-wrap">${body}</div>
+    <hr style="margin:10px 0">
+    <h3 style="text-align:right">TOTAL: ${currencyMap[activeCurrency]}${total}</h3>
+    <p style="font-size:10px; text-align:center; margin-top:20px;">Powered by TiffyAI</p>
+  `;
+  setTimeout(() => { window.print(); }, 500);
+}
+
+function renderEditor(){
+  const container = document.getElementById('menuEditor');
+  container.innerHTML = '';
+  menuSections.forEach((sec, sIdx) => {
+    const div = document.createElement('div');
+    div.className = 'editor-block';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <input style="width:70%; font-weight:bold; color:var(--gold);" value="${sec.title}" oninput="menuSections[${sIdx}].title=this.value;renderMenu()">
+        <button class="remove" onclick="removeSection(${sIdx})">🗑️</button>
+      </div>
+      ${sec.items.map((it, iIdx) => `
+        <div style="background:#222; padding:10px; margin-top:10px; border-radius:8px;">
+          <input value="${it.name}" placeholder="Item Name" oninput="menuSections[${sIdx}].items[${iIdx}].name=this.value;renderMenu()">
+          <input type="number" value="${it.price}" placeholder="Price" oninput="menuSections[${sIdx}].items[${iIdx}].price=this.value;renderMenu()">
+          <textarea oninput="menuSections[${sIdx}].items[${iIdx}].desc=this.value;renderMenu()">${it.desc}</textarea>
+          <button class="remove" onclick="menuSections[${sIdx}].items.splice(${iIdx},1);renderEditor();renderMenu()">Remove Item</button>
+        </div>
+      `).join('')}
+      <button onclick="menuSections[${sIdx}].items.push({name:'New',price:0,desc:'',img:'',badge:'none'});renderEditor();renderMenu()">+ Add Item</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addSection() { menuSections.push({ title: "New Section", items: [] }); renderEditor(); renderMenu(); }
+function removeSection(idx) { if(confirm("Delete this section?")) { menuSections.splice(idx, 1); renderEditor(); renderMenu(); } }
+
+function downloadHTML() {
+  if(localStorage.getItem('tiffy_active') !== 'true') {
+    document.getElementById('paymentModal').classList.remove('hidden');
+    // For demo purposes, if you enter '1234567' in the activation inputs it sets this to true
+    return;
+  }
+  const cleanHTML = document.documentElement.innerHTML
+    .replace(/<div id="editor">[\s\S]*?<\/div>/, "")
+    .replace(/<div id="paymentModal"[\s\S]*?<\/div>/, "");
+  
+  const finalDoc = `<!DOCTYPE html><html>${cleanHTML}</html>`;
+  const blob = new Blob([finalDoc], {type: 'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'MyWebStore.html';
+  a.click();
+}
+
+function closePayment() { document.getElementById('paymentModal').classList.add('hidden'); }
+
+// Simple activation check for the download button
+function submitActivation() {
+  // Logic to check inputs... 
+  localStorage.setItem('tiffy_active', 'true');
+  location.reload();
+}
+
+document.addEventListener('DOMContentLoaded', () => { renderMenu(); renderEditor(); renderSalesLog(); });
+</script>
+</body>
+</html>
