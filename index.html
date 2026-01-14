@@ -399,7 +399,7 @@ function payWithPaypal(){
 
 function confirmManualPayment(){
   const code = generateRequestCode();
-  const msg = `TIFFYAI PAYMENT INITIATED\nCode: ${code}\nFNB\nAcc: 62912507433\nBranch: 250655`;
+  const msg = `TIFFYAI PAYMENT INITIATED\nCode: ${code}\nFNB\nAcc: 62912507433\nBranch: 250655\nSwift: FIRNZAJJ`;
   window.open('https://wa.me/27766314246?text=' + encodeURIComponent(msg), '_blank');
 }
 
