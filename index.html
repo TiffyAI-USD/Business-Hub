@@ -2,220 +2,564 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TiffyAI Business Pro</title>
+<title>Webstore</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="TiffyAI Web-Store Builder">
+<meta property="og:description" content="Create your own web-store with live preview. Order via WhatsApp. Ready in minutes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tiffyai-usd.github.io/Web-Store-App/v2.html">
+
+<meta property="og:image" content="https://tiffyai-usd.github.io/Web-Store-App/WebApp.gif">
+<meta property="og:image:secure_url" content="https://tiffyai-usd.github.io/Web-Store-App/WebApp.gif">
+<meta property="og:image:type" content="image/gif">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tiffyai-usd.github.io/Web-Store-App/WebApp.gif">
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e6e6e6}
-:root{--gold:#d4a373;--gold2:#f1b86b;--whatsapp:#25D366}
+:root{--gold:#d4a373;--gold2:#f1b86b}
 
-/* PREVIOUS STYLES (Kept exactly as you liked) */
-header{ min-height:80vh; background-size:cover; background-position:center; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; }
-header::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+/* HEADER */
+header{
+  min-height:80vh;
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+}
+header::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+}
 header *{position:relative;z-index:2}
-.logo{ max-width:180px; border-radius:16px; border:3px solid var(--gold); margin-bottom:1rem; }
+.logo{
+  max-width:180px;
+  border-radius:16px;
+  border:3px solid var(--gold);
+  margin-bottom:1rem;
+}
 h1{font-family:'Bebas Neue';font-size:4rem;color:var(--gold)}
 .tagline{font-family:'Bebas Neue';color:var(--gold)}
 
+/* MENU */
 #menu{max-width:1200px;margin:auto;padding:4rem 5%}
-.section-title{ font-family:'Bebas Neue'; font-size:2.4rem; color:var(--gold); margin:2rem 0 1rem; }
-.menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.2rem; }
-.menu-item{ background:#0f0f0f; border-radius:12px; border:1px solid #222; overflow:hidden; position:relative; transition:0.4s; }
+.section-title{
+  font-family:'Bebas Neue';
+  font-size:2.4rem;
+  color:var(--gold);
+  margin:2rem 0 1rem;
+}
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1.2rem;
+}
+.menu-item{
+  background:#0f0f0f;
+  border-radius:12px;
+  border:1px solid #222;
+  overflow:hidden;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-/* MARKETING & STARS */
-.marketing-active .menu-item { border: 1px solid var(--gold); transform: scale(1.02); }
-.rating { color: #ffcc00; font-size: 1rem; margin-bottom: 5px; }
-.star-input { display: flex; gap: 5px; margin-bottom: 10px; }
-.star-btn { background: none; border: none; font-size: 1.4rem; color: #444; cursor: pointer; }
-.star-btn.active { color: #ffcc00; }
+/* MARKETING MODE STYLES */
+.marketing-active .menu-item {
+  border: 1px solid var(--gold);
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(212, 163, 115, 0.2);
+}
 
-.share-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
-.status-btn { position: absolute; top: 10px; left: 10px; background: var(--whatsapp); color: #000; border: none; border-radius: 20px; padding: 5px 10px; font-family:'Bebas Neue'; font-size:0.8rem; z-index:10; cursor:pointer; }
+.share-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  z-index: 5;
+}
 
-.menu-item img{ width:100%; height:200px; object-fit:cover; border-bottom:3px solid var(--gold); }
+.status-saver-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-family: 'Bebas Neue';
+  cursor: pointer;
+  z-index: 5;
+}
+
+.rating-stars { color: #ffcc00; margin-bottom: 5px; font-size: 0.9rem; }
+
+.menu-item img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-bottom:3px solid var(--gold);
+}
 .card{padding:1rem}
+.menu-item h3{font-family:'Bebas Neue';color:var(--gold)}
+.price{font-family:'Bebas Neue';color:var(--gold2)}
 
-/* EDITOR TOOLS */
-#editor{ background:url('silky.jpeg') center / cover; border-top:3px dashed var(--gold); padding:3rem 5%; }
-.editor-block{ background:rgba(20,20,20,0.95); padding:1.5rem; border-radius:14px; margin-bottom:2rem; }
+/* FOOTER */
+footer{
+  background:#000;
+  padding:2rem;
+  text-align:center;
+  border-top:1px solid #222;
+  color:#999;
+}
+
+/* EDITOR */
+#editor{
+  background:url('silky.jpeg') center / cover no-repeat;
+  border-top:3px dashed var(--gold);
+  padding:3rem 5%;
+}
+.editor-block{
+  background:rgba(20,20,20,0.92);
+  padding:1.5rem;
+  border-radius:14px;
+  margin-bottom:2rem;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
 label{display:block;margin-top:1rem;color:var(--gold)}
-input,textarea,select{ width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff; border-radius:6px; }
-button{ background:linear-gradient(180deg,var(--gold),var(--gold2)); border:none; padding:12px 20px; border-radius:30px; font-family:'Bebas Neue'; cursor:pointer; margin-top:10px; }
-.cloud-btn { background: #3498db; color: #fff; margin-bottom: 5px; font-size: 0.8rem; }
+input,textarea,select{
+  width:100%;
+  padding:10px;
+  background:#222;
+  border:1px solid #444;
+  color:#fff;
+  border-radius:6px;
+}
+textarea{resize:vertical}
+button{
+  background:linear-gradient(180deg,var(--gold),var(--gold2));
+  border:none;
+  padding:10px 18px;
+  border-radius:30px;
+  font-family:'Bebas Neue';
+  font-size:1.1rem;
+  cursor:pointer;
+  margin-top:10px;
+}
+.remove{background:#900;color:#fff}
+.cloud-btn { background: #3498db; color: white; margin-bottom: 5px; font-size: 0.8rem; }
 
-/* PDF & BUTTONS */
-#whatsappOrderBtn{ position:fixed; bottom:20px; right:20px; z-index:999; background:var(--whatsapp); color:#000; padding:14px 22px; border-radius:40px; font-family:'Bebas Neue'; text-decoration:none; }
-.quote-btn { position: fixed; bottom: 80px; right: 20px; z-index: 998; background: #fff; color: #000; padding: 10px 20px; border-radius: 30px; font-family: 'Bebas Neue'; cursor: pointer; border: none; }
-.item-whatsapp-btn { background: var(--whatsapp); border: none; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; }
+/* WHATSAPP BUTTONS */
+#whatsappOrderBtn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:999;
+  background:linear-gradient(180deg,#25D366,#1ebe5d);
+  color:#071010;
+  padding:14px 22px;
+  border-radius:40px;
+  font-family:'Bebas Neue';
+  font-size:1.2rem;
+  text-decoration:none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
 
-@media print { #editor, #whatsappOrderBtn, .quote-btn, .share-btn, .status-btn { display: none !important; } }
+.quote-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 998;
+  background: #fff;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: 'Bebas Neue';
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.item-whatsapp-btn {
+  background: #25D366;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  text-decoration: none !important;
+}
+.item-whatsapp-btn img { width: 28px; height: 28px; }
+
+/* MODALS */
+.modal{ position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; align-items:center; justify-content:center; z-index:2000; }
+.hidden{display:none}
+.modal-glass{
+  width:90%; max-width:420px; background:rgba(20,20,20,0.85); backdrop-filter:blur(14px);
+  border:1px solid rgba(212,163,115,0.4); border-radius:20px; padding:2rem; color:#fff;
+}
+.pay-btn{ width:100%; padding:14px; border-radius:40px; margin-top:12px; font-family:'Bebas Neue'; font-size:1.1rem; cursor:pointer; border:none; }
+.paypal{ background:#ffc439; color:#111; }
+.confirm{ background:var(--gold); color:#111; }
+.activation{ max-width:600px; margin:3rem auto; padding:2rem; border-top:1px dashed var(--gold); text-align:center; }
+.code-inputs{ display:flex; justify-content:center; gap:10px; margin-bottom:1.5rem; }
+.code-inputs input{ width:42px; height:52px; text-align:center; font-size:1.4rem; border-radius:8px; background:#111; border:1px solid #444; color:#fff; }
+
+@media print {
+  #editor, #whatsappOrderBtn, .quote-btn, .share-btn, .status-saver-btn { display: none !important; }
+}
 </style>
 </head>
 
 <body>
-<header id="header">
-  <img id="logo" class="logo">
-  <h1 id="cafeName">YOUR BUSINESS</h1>
-  <p id="tagline" class="tagline">MARKETING & POS READY</p>
-</header>
-
-<section id="menu"><div id="menuRender"></div></section>
-<footer><p id="footerText">© 2026 YOUR BUSINESS</p></footer>
-
-<div id="editor">
-  <div class="editor-block">
-    <h2 style="font-family:'Bebas Neue';color:var(--gold)">BUSINESS IDENTITY</h2>
-    <label>Business Name</label><input oninput="document.getElementById('cafeName').textContent=this.value">
-    <label>Logo Upload</label>
-    <button class="cloud-btn" onclick="document.getElementById('logoInput').click()">☁️ CLOUD UPLOAD LOGO</button>
-    <input type="file" id="logoInput" hidden onchange="uploadToCloud(this, url => {logoUrl=url; document.getElementById('logo').src=url})">
-    
-    <button onclick="toggleMarketingMode()" id="mktBtn" style="width:100%; background:#1a1a1a; color:var(--gold); border:1px solid var(--gold);">⚡ ACTIVATE MARKETING MODE</button>
+<div id="paymentModal" class="modal hidden">
+  <div class="modal-glass">
+    <h2 style="font-family:'Bebas Neue'; color:var(--gold); text-align:center; font-size:2rem;">TiffyAI Web-Store Builder</h2>
+    <p style="text-align:center; margin:1rem 0;">$30 USD (≈ R499) once-off<br>• Hosting covered for 1 year</p>
+    <button class="pay-btn paypal" onclick="payWithPaypal()">Pay with PayPal</button>
+    <button class="pay-btn confirm" onclick="confirmManualPayment()">I will send an EFT</button>
+    <button class="pay-btn ghost" style="background:none; color:#aaa; width:100%; margin-top:10px; border:none; cursor:pointer;" onclick="closePayment()">Cancel</button>
   </div>
-
-  <div id="menuEditor"></div>
-  <button onclick="addSection()">+ ADD SECTION</button>
-  <button onclick="downloadHTML()">DOWNLOAD WEBSITE HTML</button>
 </div>
 
-<canvas id="flyerCanvas" width="1080" height="1920" style="display:none;"></canvas>
+<header id="header">
+  <img id="logo" class="logo">
+  <h1 id="cafeName">YOUR WEB STORE BUSINESS</h1>
+  <p id="tagline" class="tagline">With Live Preview</p>
+</header>
+
+<section id="menu">
+  <div id="menuRender"></div>
+</section>
+
+<footer>
+  <p id="footerText">© 2026 YOUR BUSINESS</p>
+</footer>
+
+<div id="activationPanel" class="activation">
+  <h3 style="font-family:'Bebas Neue'; color:var(--gold); font-size:2rem;">Activate Your Web-Store</h3>
+  <p style="color:#ccc; margin-bottom:1rem;">Enter the 7-digit activation key received from the admin.</p>
+  <div class="code-inputs">
+    <input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1">
+  </div>
+  <button onclick="submitActivation()">Activate & Unlock Download</button>
+</div>
+ 
+<div id="editor">
+<h2 style="font-family:'Bebas Neue';color:var(--gold)">BUSINESS INFO</h2>
+<div class="editor-block">
+  <label>Business Name</label>
+  <input oninput="document.getElementById('cafeName').textContent=this.value">
+  <label>Tagline</label>
+  <input oninput="document.getElementById('tagline').textContent=this.value">
+  <label>Logo Upload</label>
+  <button class="cloud-btn" onclick="this.nextElementSibling.click()">☁️ CLOUD UPLOAD LOGO</button>
+  <input type="file" style="display:none" accept="image/*" onchange="uploadImage(this,img=>{document.getElementById('logo').src=img; logoUrl=img;})">
+  <label>Logo URL</label>
+  <input id="logoUrl" oninput="updateLogoUrl(this.value)">
+  <label>Banner Upload</label>
+  <input type="file" accept="image/*" onchange="uploadImage(this,img=>{document.getElementById('header').style.backgroundImage=`url('${img}')`;})">
+  <label>Banner URL</label>
+  <input id="bannerUrl" oninput="updateBannerUrl(this.value)">
+  <label>Footer Text</label>
+  <input oninput="document.getElementById('footerText').textContent=this.value">
+  <label>WhatsApp Number</label>
+  <input value="+27660000000" oninput="whatsappNumber=this.value.replace(/[^0-9+]/g,'')">
+  <label>Currency</label>
+  <select onchange="setCurrency(this.value)">
+      <option value="ZAR">ZAR (R)</option>
+      <option value="USD">USD ($)</option>
+      <option value="EUR">EUR (€)</option>
+      <option value="GBP">GBP (£)</option>
+      <option value="NGN">NGN (₦)</option>
+  </select>
+  
+  <button onclick="toggleMarketingMode()" id="mktBtn" style="width:100%; margin-top:20px; background:#1a1a1a; color:var(--gold); border:1px solid var(--gold);">
+    ⚡ ACTIVATE MARKETING MODE
+  </button>
+</div>
+
+<h2 style="font-family:'Bebas Neue';color:var(--gold)">MENU BUILDER</h2>
+<div id="menuEditor"></div>
+<button onclick="addSection()">+ ADD SECTION</button>
+<button onclick="downloadHTML()">DOWNLOAD WEBSITE HTML</button>
+</div>
+
+<canvas id="statusCanvas" width="1080" height="1920" style="display:none;"></canvas>
 
 <script>
+/* ================== STATE ================== */
 let whatsappNumber = "+27660000000";
+let logoUrl = "";
 let marketingMode = false;
 let activeCurrency = localStorage.getItem('tiffyai_currency') || 'ZAR';
 const orderState = {};
-const currencyMap = { ZAR:{symbol:'R'}, USD:{symbol:'$'}, EUR:{symbol:'€'}, GBP:{symbol:'£'}, NGN:{symbol:'₦'} };
 
-let menuSections = [{ title: "Products", items: [{ name: 'Sample Product', price: 150, desc: "Status Saver Ready", img: "", rating: 5 }] }];
+const currencyMap = {
+  ZAR: { symbol: 'R' }, USD: { symbol: '$' }, EUR: { symbol: '€' },
+  GBP: { symbol: '£' }, NGN: { symbol: '₦' }, KES: { symbol: 'KSh' },
+  GHS: { symbol: 'GH₵' }, AUD: { symbol: '$' }, CAD: { symbol: '$' }
+};
 
-/* --- CLOUD UPLOAD --- */
-function uploadToCloud(input, callback) {
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => callback(e.target.result); // Placeholder for actual API like Imgur
-    reader.readAsDataURL(file);
-}
+let menuSections = [{ title: "Products", items: [{ name: 'New Item', price: 100, desc: "Product Description", img: "", rating: 5 }] }];
 
-/* --- MARKETING MODE & FLYER --- */
+/* ================== CORE LOGIC ================== */
+function setCurrency(c){ activeCurrency=c; localStorage.setItem('tiffyai_currency',c); renderMenu(); }
+
 function toggleMarketingMode() {
-    marketingMode = !marketingMode;
-    document.body.classList.toggle('marketing-active');
-    document.getElementById('mktBtn').textContent = marketingMode ? "🔥 MARKETING MODE LIVE" : "⚡ ACTIVATE MARKETING MODE";
-    renderMenu();
+  marketingMode = !marketingMode;
+  document.body.classList.toggle('marketing-active');
+  const btn = document.getElementById('mktBtn');
+  btn.textContent = marketingMode ? "🔥 MARKETING MODE LIVE" : "⚡ ACTIVATE MARKETING MODE";
+  btn.style.background = marketingMode ? "var(--gold)" : "#1a1a1a";
+  btn.style.color = marketingMode ? "#000" : "var(--gold)";
+  renderMenu();
 }
 
-async function createStatusFlyer(it) {
-    const canvas = document.getElementById('flyerCanvas');
-    const ctx = canvas.getContext('2d');
-    const sym = currencyMap[activeCurrency].symbol;
+function uploadImage(input, cb){
+  const f = input.files[0]; if (!f) return;
+  const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(f);
+}
 
-    // Background
-    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0,0,1080,1920);
+function updateLogoUrl(v){ logoUrl=v; if(v) document.getElementById('logo').src=v; }
+function updateBannerUrl(v){ if(v) document.getElementById('header').style.backgroundImage=`url('${v}')`; }
+
+/* ================== STATUS SAVER GENERATOR ================== */
+function generateStatusFlyer(it) {
+  const canvas = document.getElementById('statusCanvas');
+  const ctx = canvas.getContext('2d');
+  const sym = currencyMap[activeCurrency].symbol;
+  const bizName = document.getElementById('cafeName').textContent;
+
+  // Background
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0,0,1080,1920);
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = it.img || 'https://via.placeholder.com/1080x1080?text=No+Image';
+  
+  img.onload = function() {
+    // Product Image (Square)
+    ctx.drawImage(img, 0, 300, 1080, 1080);
     
-    // Draw Product Image
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = it.img || 'https://via.placeholder.com/1080x1080?text=Product';
-    img.onload = () => {
-        ctx.drawImage(img, 0, 200, 1080, 1080);
-        
-        // Text Overlays
-        ctx.fillStyle = "#d4a373";
-        ctx.font = "bold 80px Arial"; ctx.textAlign = "center";
-        ctx.fillText(it.name.toUpperCase(), 540, 1400);
-        
-        ctx.fillStyle = "#fff";
-        ctx.font = "60px Arial";
-        ctx.fillText(it.desc, 540, 1500);
+    // Header Overlay
+    ctx.fillStyle = "rgba(212,163,115,0.9)";
+    ctx.fillRect(0, 1380, 1080, 200);
 
-        ctx.fillStyle = "#f1b86b";
-        ctx.font = "bold 100px Arial";
-        ctx.fillText(sym + it.price, 540, 1650);
+    // Text Product Name
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 80px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(it.name.toUpperCase(), 540, 1480);
 
-        // Branding
-        ctx.fillStyle = "#444"; ctx.font = "40px Arial";
-        ctx.fillText("ORDER VIA WHATSAPP: " + whatsappNumber, 540, 1800);
+    // Price Tag
+    ctx.fillStyle = "#f1b86b";
+    ctx.font = "bold 120px Arial";
+    ctx.fillText(sym + it.price, 540, 1700);
 
-        // Trigger Download
-        const link = document.createElement('a');
-        link.download = it.name + '_Status.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    };
+    // Footer
+    ctx.fillStyle = "#666";
+    ctx.font = "40px Arial";
+    ctx.fillText("ORDER VIA WHATSAPP: " + whatsappNumber, 540, 1850);
+    ctx.fillText(bizName, 540, 100);
+
+    // Download
+    const link = document.createElement('a');
+    link.download = it.name + '-flyer.png';
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
 }
 
-/* --- RENDER LOGIC --- */
+/* ================== RENDER ================== */
 function renderMenu(){
-    const menuRender = document.getElementById('menuRender');
-    menuRender.innerHTML = '';
-    const sym = currencyMap[activeCurrency].symbol;
+  const menuRender = document.getElementById('menuRender');
+  menuRender.innerHTML = '';
+  const sym = currencyMap[activeCurrency].symbol;
 
-    menuSections.forEach((sec, sIdx) => {
-        const h2 = document.createElement('h2'); h2.className = 'section-title'; h2.textContent = sec.title;
-        const grid = document.createElement('div'); grid.className = 'menu-grid';
+  menuSections.forEach((sec, s) => {
+    const h2 = document.createElement('h2');
+    h2.className = 'section-title'; h2.textContent = sec.title;
+    const grid = document.createElement('div');
+    grid.className = 'menu-grid';
 
-        sec.items.forEach((it, iIdx) => {
-            const stars = "★".repeat(it.rating || 5) + "☆".repeat(5 - (it.rating || 5));
-            const card = document.createElement('div'); card.className = 'menu-item';
-            
-            let mktTools = marketingMode ? `
-                <button class="status-btn" onclick='createStatusFlyer(${JSON.stringify(it)})'>📲 STATUS SAVER</button>
-                <div class="share-btn" onclick="shareItem('${it.name}', '${it.price}', '${it.desc}', '${it.img}')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
-                </div>` : '';
+    sec.items.forEach((it, i) => {
+      const key = `${s}-${i}`;
+      const qty = orderState[key] || 0;
+      const stars = "★".repeat(it.rating || 5) + "☆".repeat(5 - (it.rating || 5));
+      
+      const card = document.createElement('div');
+      card.className = 'menu-item';
+      
+      let mktTools = marketingMode ? `
+        <button class="status-saver-btn" onclick='generateStatusFlyer(${JSON.stringify(it).replace(/'/g, "&apos;")})'>📲 STATUS SAVER</button>
+        <div class="share-btn" onclick="shareItem('${it.name}', '${it.price}', '${it.desc}', '${it.img}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        </div>` : '';
 
-            card.innerHTML = `
-                ${mktTools}
-                <img src="${it.img || ''}">
-                <div class="card">
-                    <h3>${it.name}</h3>
-                    <div class="rating">${stars}</div>
-                    <p>${it.desc}</p>
-                    <div class="price">${sym}${it.price}</div>
-                    <div style="margin-top:10px;">
-                        <button onclick="changeQty('${sIdx}-${iIdx}', -1)">−</button>
-                        <strong>${orderState[`${sIdx}-${iIdx}`] || 0}</strong>
-                        <button onclick="changeQty('${sIdx}-${iIdx}', 1)">+</button>
-                    </div>
-                </div>`;
-            grid.appendChild(card);
-        });
-        menuRender.appendChild(h2); menuRender.appendChild(grid);
+      card.innerHTML = `
+        ${mktTools}
+        <img src="${it.img || ''}">
+        <div class="card">
+          <h3>${it.name}</h3>
+          <div class="rating-stars">${stars}</div>
+          <p>${it.desc}</p>
+          <div class="price">${it.price == 0 ? 'NEGOTIABLE' : sym + it.price}</div>
+          <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+            ${it.price == 0 ? 
+              `<a class="item-whatsapp-btn" href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi, inquiring about '+it.name)}" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+              </a>` : 
+              `<button onclick="changeQty('${key}', -1)">−</button><strong>${qty}</strong><button onclick="changeQty('${key}', 1)">+</button>`
+            }
+          </div>
+        </div>`;
+      grid.appendChild(card);
     });
-    renderWhatsapp();
+    menuRender.appendChild(h2); menuRender.appendChild(grid);
+  });
+  renderWhatsapp();
+}
+
+function shareItem(name, price, desc, img) {
+  const sym = currencyMap[activeCurrency].symbol;
+  const biz = document.getElementById('cafeName').textContent;
+  const text = `🔥 ${name}\n💰 ${price > 0 ? sym + price : 'Negotiable'}\n\n${desc}\n\n📸 Photo: ${img}\n\n🛒 Store: ${biz}\nPowered by TiffyAI`;
+  if (navigator.share) { navigator.share({ title: name, text: text, url: window.location.href }); }
+  else { navigator.clipboard.writeText(text); alert("Ad details copied!"); }
+}
+
+function changeQty(key, delta){ orderState[key] = Math.max(0, (orderState[key] || 0) + delta); renderMenu(); }
+
+function renderWhatsapp(){
+  const total = Object.values(orderState).reduce((a,b)=>a+b,0);
+  let btn = document.getElementById('whatsappOrderBtn');
+  let qBtn = document.getElementById('quoteBtn');
+
+  if (total === 0){ if(btn) btn.remove(); if(qBtn) qBtn.remove(); return; }
+  
+  const sym = currencyMap[activeCurrency].symbol;
+  let msg = `🛍️ NEW ORDER FROM ${document.getElementById('cafeName').textContent}\n\n`;
+  let grand = 0;
+  menuSections.forEach((sec, s)=>{
+    sec.items.forEach((it, i)=>{
+      const q = orderState[`${s}-${i}`] || 0;
+      if(q){ 
+        grand += (q * it.price); 
+        msg += `✅ ${q}x ${it.name} - ${sym}${q*it.price}\n`;
+        if(it.img && it.img.startsWith('http')) msg += `🔗 View Item: ${it.img}\n`;
+        msg += `\n`;
+      }
+    });
+  });
+  msg += `──────────────\n💰 TOTAL: ${sym}${grand}\n──────────────`;
+
+  if(!btn){
+    btn = document.createElement('a'); btn.id = 'whatsappOrderBtn'; document.body.appendChild(btn);
+    qBtn = document.createElement('button'); qBtn.id = 'quoteBtn'; qBtn.className = 'quote-btn';
+    qBtn.textContent = "📄 PRINT PDF QUOTE"; qBtn.onclick = () => window.print();
+    document.body.appendChild(qBtn);
+  }
+  btn.href = `https://wa.me/${whatsappNumber}?text=` + encodeURIComponent(msg);
+  btn.textContent = `ORDER NOW (${total})`;
 }
 
 function renderEditor(){
-    const me = document.getElementById('menuEditor'); me.innerHTML = '';
-    menuSections.forEach((sec, s)=>{
-        const b = document.createElement('div'); b.className = 'editor-block';
-        b.innerHTML = `<h3>${sec.title}</h3>
-            ${sec.items.map((it,i)=>`
-                <div style="border-top:1px solid #333; margin-top:10px; padding-top:10px;">
-                    <label>Product Name</label><input value="${it.name}" oninput="menuSections[${s}].items[${i}].name=this.value;renderMenu()">
-                    <label>Rating (1-5)</label>
-                    <div class="star-input">
-                        ${[1,2,3,4,5].map(st => `<button class="star-btn ${it.rating>=st?'active':''}" onclick="menuSections[${s}].items[${i}].rating=${st};renderEditor();renderMenu()">★</button>`).join('')}
-                    </div>
-                    <label>Price</label><input type="number" value="${it.price}" oninput="menuSections[${s}].items[${i}].price=this.value;renderMenu()">
-                    <label>Cloud Image</label>
-                    <button class="cloud-btn" onclick="this.nextElementSibling.click()">☁️ UPLOAD PHOTO</button>
-                    <input type="file" hidden onchange="uploadToCloud(this, url=>{menuSections[${s}].items[${i}].img=url;renderMenu()})">
-                </div>`).join('')}
-            <button onclick="menuSections[${s}].items.push({name:'New',price:0,desc:'',img:'',rating:5});renderEditor();renderMenu()">+ Add Item</button>`;
-        me.appendChild(b);
-    });
+  const me = document.getElementById('menuEditor'); me.innerHTML = '';
+  menuSections.forEach((sec, s)=>{
+    const b = document.createElement('div'); b.className = 'editor-block';
+    b.innerHTML = `<div class="section-head"><input value="${sec.title}" oninput="menuSections[${s}].title=this.value;renderMenu()">
+      <button class="remove" onclick="menuSections.splice(${s},1);renderEditor();renderMenu()">✕</button></div>
+      ${sec.items.map((it,i)=>`<div style="border-top:1px solid #333; margin-top:10px; padding-top:10px;">
+          <label>Item Name</label><input value="${it.name}" oninput="menuSections[${s}].items[${i}].name=this.value;renderMenu()">
+          <label>Rating (1-5)</label>
+          <input type="number" min="1" max="5" value="${it.rating||5}" oninput="menuSections[${s}].items[${i}].rating=this.value;renderMenu()">
+          <label>Price (0 for Advert)</label><input type="number" value="${it.price}" oninput="menuSections[${s}].items[${i}].price=this.value;renderMenu()">
+          <label>Description</label><textarea oninput="menuSections[${s}].items[${i}].desc=this.value;renderMenu()">${it.desc}</textarea>
+          <label>Img URL (for WhatsApp preview)</label><input value="${it.img}" oninput="menuSections[${s}].items[${i}].img=this.value;renderMenu()">
+          <label>Or Upload</label>
+          <button class="cloud-btn" onclick="this.nextElementSibling.click()">☁️ CLOUD UPLOAD PHOTO</button>
+          <input type="file" style="display:none" onchange="uploadImage(this,img=>{menuSections[${s}].items[${i}].img=img;renderMenu()})">
+          <button class="remove" onclick="menuSections[${s}].items.splice(${i},1);renderEditor();renderMenu()">Remove Item</button>
+        </div>`).join('')}
+      <button onclick="menuSections[${s}].items.push({name:'New Item',price:0,desc:'',img:'',rating:5});renderEditor();renderMenu()">+ Add Item</button>`;
+    me.appendChild(b);
+  });
 }
 
-/* (Remaining logic for WhatsApp, Payment, and Download remains exactly as your original file) */
-function changeQty(k, d){ orderState[k] = Math.max(0, (orderState[k]||0)+d); renderMenu(); }
-function setCurrency(c){ activeCurrency=c; renderMenu(); }
-function downloadHTML(){ actualDownload(); } // Restored your logic
-function actualDownload(){ /* Same as your previous script */ }
+function addSection(){ menuSections.push({ title: "New Section", items: [] }); renderEditor(); renderMenu(); }
 
-document.addEventListener('DOMContentLoaded', () => { renderMenu(); renderEditor(); });
+/* ================== PAYMENT & EXPORT ================== */
+function downloadHTML(){
+  if(localStorage.getItem('tiffyai_activated') === 'true'){ actualDownload(); return; }
+  const code = generateRequestCode();
+  const msg = `TIFFYAI PAYMENT INITIATED\nCode: ${code}\nFNB (First National Bank)\nAcc: 62912507433\nBranch: 250655\nSwift: FIRNZAJJ`;
+  window.open('https://wa.me/27766314246?text=' + encodeURIComponent(msg), '_blank');
+  document.getElementById('paymentModal').classList.remove('hidden');
+}
+
+function payWithPaypal(){ window.open('https://paypal.me/CatHostProWebsites/30', '_blank'); }
+function confirmManualPayment(){ window.open('https://wa.me/27766314246?text=Confirming+EFT+Payment', '_blank'); }
+
+function actualDownload(){
+  const doc = document.documentElement.cloneNode(true);
+  doc.querySelector('#editor')?.remove(); doc.querySelector('#paymentModal')?.remove(); doc.querySelector('#activationPanel')?.remove();
+  const script = Array.from(doc.querySelectorAll('script')).find(s => s.textContent.includes('const menuSections'));
+  if(script){
+    script.textContent = script.textContent.replace(/let activeCurrency = "[^"]*";/, `let activeCurrency = "${activeCurrency}";`);
+    script.textContent = script.textContent.replace(/let whatsappNumber = "[^"]*";/, `let whatsappNumber = "${whatsappNumber}";`);
+    script.textContent = script.textContent.replace(/let menuSections = \[[\s\S]*?\];/, `let menuSections = ${JSON.stringify(menuSections)};`);
+  }
+  const blob = new Blob(['<!DOCTYPE html>\n' + doc.outerHTML], { type: 'text/html' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'WebStore.html'; a.click();
+}
+
+function generateRequestCode(){
+  let d = ''; while(d.length < 14) d += Math.floor(Math.random()*10);
+  let s = JSON.parse(localStorage.getItem('tiffyai_r') || '[]'); s.push(d); localStorage.setItem('tiffyai_r', JSON.stringify(s));
+  return d.match(/.{1,4}/g).join('-');
+}
+
+function submitActivation(){
+  const ent = Array.from(document.querySelectorAll('.code-inputs input')).map(i=>i.value).join('');
+  const s = JSON.parse(localStorage.getItem('tiffyai_r') || '[]');
+  if(s.some(d => { let k=''; for(let i=0; i<d.length; i+=2) k+=d[i]; return k===ent; })){
+    localStorage.setItem('tiffyai_activated', 'true'); location.reload();
+  } else { alert('Invalid Key'); }
+}
+
+function closePayment(){ document.getElementById('paymentModal').classList.add('hidden'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if(localStorage.getItem('tiffyai_activated') === 'true') document.getElementById('activationPanel')?.remove();
+  renderMenu(); renderEditor();
+});
 </script>
 </body>
 </html>
