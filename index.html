@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TiffyAI Pro Business Suite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e6e6e6}
+:root{--gold:#d4a373;--gold2:#f1b86b;--whatsapp:#25D366}
+
+/* HEADER & THEME */
+header{ min-height:80vh; background-size:cover; background-position:center; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; }
+header::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+header *{position:relative;z-index:2}
+.logo{ max-width:180px; border-radius:16px; border:3px solid var(--gold); margin-bottom:1rem; }
+h1{font-family:'Bebas Neue';font-size:4rem;color:var(--gold)}
+.tagline{font-family:'Bebas Neue';color:var(--gold)}
+
+/* MENU GRID */
+#menu{max-width:1200px;margin:auto;padding:4rem 5%}
+.section-title{ font-family:'Bebas Neue'; font-size:2.4rem; color:var(--gold); margin:2rem 0 1rem; }
+.menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.2rem; }
+.menu-item{ background:#0f0f0f; border-radius:12px; border:1px solid #222; overflow:hidden; position: relative; transition: 0.4s; }
+.marketing-active .menu-item { border: 1px solid var(--gold); transform: scale(1.02); }
+
+/* BADGES & TOOLS */
+.badge { position: absolute; top: 15px; left: 15px; padding: 5px 12px; border-radius: 4px; font-family: 'Bebas Neue'; font-size: 0.9rem; z-index: 4; text-transform: uppercase; }
+.badge-scarcity { background: #ff0000; color: #fff; animation: pulse 1.5s infinite; }
+.badge-hot { background: var(--gold); color: #000; }
+.badge-new { background: #3498db; color: #fff; }
+@keyframes pulse { 0% {transform: scale(1);} 70% {transform: scale(1.05);} 100% {transform: scale(1);} }
+
+.share-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 5; cursor: pointer; }
+.status-btn { position: absolute; top: 10px; left: 10px; background: var(--whatsapp); color: #000; border: none; border-radius: 20px; padding: 5px 10px; font-family:'Bebas Neue'; font-size:0.8rem; z-index:5; cursor:pointer; }
+
+.menu-item img{ width:100%; height:200px; object-fit:cover; border-bottom:3px solid var(--gold); }
+.card{padding:1rem}
+.rating-stars { color: #ffcc00; margin-bottom: 5px; }
+
+/* EDITOR & POS */
+#editor{ background:rgba(15,15,15,0.98); border-top:3px dashed var(--gold); padding:3rem 5%; }
+.editor-block{ background:#1a1a1a; padding:1.5rem; border-radius:14px; margin-bottom:2rem; border: 1px solid #333; }
+label{display:block;margin-top:1rem;color:var(--gold)}
+input,textarea,select{ width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff; border-radius:6px; }
+button{ background:linear-gradient(180deg,var(--gold),var(--gold2)); border:none; padding:12px 20px; border-radius:30px; font-family:'Bebas Neue'; cursor:pointer; margin-top:10px; }
+
+.sales-log { background: #000; padding: 10px; border-radius: 8px; max-height: 200px; overflow-y: auto; margin: 10px 0; border: 1px solid #333; }
+.log-entry { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
+.bulk-panel { background: rgba(37, 211, 102, 0.1); border: 1px solid var(--whatsapp); padding: 15px; border-radius: 12px; }
+
+/* RECEIPT PRINTING */
+.receipt-wrap { background: #fff; color: #000; padding: 20px; width: 300px; margin: auto; display: none; font-family: 'Courier New', monospace; }
+@media print { body * { display: none !important; } .receipt-wrap { display: block !important; } .receipt-wrap * { display: block !important; } }
+
+#whatsappOrderBtn{ position:fixed; bottom:20px; right:20px; z-index:999; background:var(--whatsapp); color:#000; padding:14px 22px; border-radius:40px; font-family:'Bebas Neue'; text-decoration:none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <img id="logo" class="logo">
+  <h1 id="cafeName">BUSINESS NAME</h1>
+  <p id="tagline" class="tagline">PREMIUM STOREFRONT</p>
+</header>
+
+<section id="menu"><div id="menuRender"></div></section>
+
+<div id="editor">
+  <div class="editor-block">
+    <h2 style="font-family:'Bebas Neue';color:var(--gold)">BUSINESS IDENTITY</h2>
+    <label>Business Name</label><input oninput="document.getElementById('cafeName').textContent=this.value">
+    <label>WhatsApp Number</label><input id="waNum" value="+27660000000" oninput="whatsappNumber=this.value">
+    <label>Currency</label>
+    <select onchange="setCurrency(this.value)">
+        <option value="ZAR">ZAR (R)</option><option value="INR">INR (₹)</option>
+        <option value="USD">USD ($)</option><option value="EUR">EUR (€)</option>
+        <option value="GBP">GBP (£)</option><option value="NGN">NGN (₦)</option>
+    </select>
+    <button onclick="toggleMarketingMode()" id="mktBtn" style="width:100%">⚡ ACTIVATE MARKETING MODE</button>
+  </div>
+
+  <div id="menuEditor"></div>
+  <button onclick="addSection()">+ ADD NEW SECTION</button>
+
+  <div class="editor-block">
+    <h2 style="font-family:'Bebas Neue';color:var(--gold)">POS SALES HISTORY</h2>
+    <div id="salesLog" class="sales-log"></div>
+    <button onclick="localStorage.removeItem('tiffyai_sales'); renderSalesLog();" style="background:#600; font-size:0.7rem;">Clear History</button>
+  </div>
+
+  <div class="editor-block bulk-panel">
+    <h2 style="font-family:'Bebas Neue';color:var(--whatsapp)">🚀 BULK BROADCAST</h2>
+    <textarea id="bulkNumbers" placeholder="Enter numbers separated by commas..."></textarea>
+    <button onclick="startBulk()" style="background:var(--whatsapp); color:#000; width:100%">GENERATE BROADCAST QUEUE</button>
+    <div id="bulkStatus" style="color:var(--whatsapp); margin-top:10px; font-size:0.8rem;"></div>
+  </div>
+
+  <button onclick="downloadHTML()" style="width:100%; margin-top:20px;">💾 DOWNLOAD FINAL WEBSITE</button>
+</div>
+
+<div id="receiptArea" class="receipt-wrap">
+    <center><h2 id="r-biz"></h2><p id="r-date"></p></center>
+    <hr>
+    <div id="r-items"></div>
+    <hr>
+    <h3 id="r-total" style="text-align:right"></h3>
+</div>
+
+<canvas id="flyerCanvas" width="1080" height="1920" style="display:none;"></canvas>
+
+<script>
+let whatsappNumber = "+27660000000";
+let marketingMode = false;
+let activeCurrency = "ZAR";
+let promoQueue = [];
+const orderState = {};
+const currencyMap = { ZAR:{s:'R'}, INR:{s:'₹'}, USD:{s:'$'}, EUR:{s:'€'}, GBP:{s:'£'}, NGN:{s:'₦'} };
+
+let menuSections = [{ title: "Featured", items: [{ name: 'Sample Item', price: 250, desc: "High quality item", img: "", rating: 5, badge: 'none', stock: 5 }] }];
+
+function setCurrency(c){ activeCurrency=c; renderMenu(); renderEditor(); }
+
+function toggleMarketingMode() {
+    marketingMode = !marketingMode;
+    document.body.classList.toggle('marketing-active');
+    document.getElementById('mktBtn').textContent = marketingMode ? "🔥 MARKETING MODE ON" : "⚡ ACTIVATE MARKETING MODE";
+    renderMenu();
+}
+
+function renderMenu(){
+    const render = document.getElementById('menuRender'); render.innerHTML = '';
+    const sym = currencyMap[activeCurrency].s;
+    menuSections.forEach((sec, sIdx) => {
+        const title = document.createElement('h2'); title.className='section-title'; title.textContent=sec.title;
+        const grid = document.createElement('div'); grid.className='menu-grid';
+        sec.items.forEach((it, iIdx) => {
+            const key = `${sIdx}-${iIdx}`;
+            const stars = "★".repeat(it.rating) + "☆".repeat(5-it.rating);
+            let badge = (marketingMode && it.badge !== 'none') ? `<div class="badge badge-${it.badge}">${it.badge=='scarcity'?'ONLY '+it.stock+' LEFT':it.badge}</div>` : '';
+            
+            const card = document.createElement('div'); card.className = 'menu-item';
+            card.innerHTML = `
+                ${badge}
+                ${marketingMode ? `<button class="status-btn" onclick='makeFlyer(${JSON.stringify(it)})'>📲 STATUS</button>
+                <div class="share-btn" onclick="shareIt('${it.name}',${it.price},'${it.desc}')">🔗</div>` : ''}
+                <img src="${it.img || 'https://via.placeholder.com/300'}">
+                <div class="card">
+                    <h3>${it.name}</h3>
+                    <div class="rating-stars">${stars}</div>
+                    <p>${it.desc}</p>
+                    <div class="price">${sym}${it.price}</div>
+                    <div style="margin-top:10px">
+                        <button onclick="changeQty('${key}',-1)">-</button>
+                        <strong style="margin:0 10px">${orderState[key] || 0}</strong>
+                        <button onclick="changeQty('${key}',1)">+</button>
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+        render.appendChild(title); render.appendChild(grid);
+    });
+    updateWhatsapp();
+}
+
+function changeQty(k, d){ orderState[k] = Math.max(0, (orderState[k]||0)+d); renderMenu(); }
+
+function updateWhatsapp(){
+    const total = Object.values(orderState).reduce((a,b)=>a+b,0);
+    let btn = document.getElementById('whatsappOrderBtn');
+    if(total === 0){ if(btn) btn.remove(); return; }
+    if(!btn){ btn = document.createElement('a'); btn.id='whatsappOrderBtn'; document.body.appendChild(btn); }
+    
+    let msg = `🛍️ NEW ORDER\n\n`; let grand = 0;
+    menuSections.forEach((sec, s)=>{
+        sec.items.forEach((it, i)=>{
+            if(orderState[`${s}-${i}`]){
+                let q = orderState[`${s}-${i}`];
+                grand += (q * it.price);
+                msg += `✅ ${q}x ${it.name} - ${currencyMap[activeCurrency].s}${q*it.price}\n`;
+            }
+        });
+    });
+    msg += `\nTOTAL: ${currencyMap[activeCurrency].s}${grand}`;
+    btn.href = `https://wa.me/${whatsappNumber}?text=` + encodeURIComponent(msg);
+    btn.onclick = () => logSale(msg, grand);
+    btn.textContent = `ORDER NOW (${total})`;
+}
+
+function logSale(msg, total){
+    const sales = JSON.parse(localStorage.getItem('tiffyai_sales') || '[]');
+    sales.unshift({ id: Date.now(), date: new Date().toLocaleString(), total: total, msg: msg });
+    localStorage.setItem('tiffyai_sales', JSON.stringify(sales));
+    renderSalesLog();
+}
+
+function renderSalesLog(){
+    const container = document.getElementById('salesLog');
+    const sales = JSON.parse(localStorage.getItem('tiffyai_sales') || '[]');
+    container.innerHTML = sales.map(s => `
+        <div class="log-entry">
+            <span>${s.date} - ${currencyMap[activeCurrency].s}${s.total}</span>
+            <button onclick='printR(${JSON.stringify(s)})' style="padding:2px 10px; font-size:0.7rem">PRINT</button>
+        </div>
+    `).join('');
+}
+
+function printR(s){
+    document.getElementById('r-biz').textContent = document.getElementById('cafeName').textContent;
+    document.getElementById('r-date').textContent = s.date;
+    document.getElementById('r-items').innerText = s.msg;
+    document.getElementById('r-total').textContent = "TOTAL: " + currencyMap[activeCurrency].s + s.total;
+    window.print();
+}
+
+function startBulk(){
+    promoQueue = document.getElementById('bulkNumbers').value.split(/[\n,]+/).map(n=>n.trim()).filter(n=>n.length>5);
+    nextBulk();
+}
+
+function nextBulk(){
+    if(promoQueue.length === 0){ document.getElementById('bulkStatus').textContent="Finished!"; return; }
+    const num = promoQueue.shift();
+    const url = `https://wa.me/${num}?text=` + encodeURIComponent(`Check our catalog: ${window.location.href}`);
+    window.open(url, '_blank');
+    document.getElementById('bulkStatus').textContent = `Next: ${num} (${promoQueue.length} left). Click button again to continue.`;
+}
+
+function shareIt(n,p,d){
+    const t = `🔥 ${n}\n💰 ${currencyMap[activeCurrency].s}${p}\n${d}\n\nShop here: ${window.location.href}`;
+    navigator.share ? navigator.share({text:t}) : alert("Link Copied!");
+}
+
+async function makeFlyer(it){
+    const canvas = document.getElementById('flyerCanvas'); const ctx = canvas.getContext('2d');
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1920);
+    ctx.fillStyle=currencyMap[activeCurrency].s=='₹'?'#ffcc00':'#d4a373';
+    ctx.font='bold 80px Arial'; ctx.textAlign='center';
+    ctx.fillText(it.name.toUpperCase(), 540, 1400);
+    ctx.font='bold 120px Arial'; ctx.fillText(currencyMap[activeCurrency].s + it.price, 540, 1600);
+    const link = document.createElement('a'); link.download='flyer.png'; link.href=canvas.toDataURL(); link.click();
+}
+
+function renderEditor(){
+    const me = document.getElementById('menuEditor'); me.innerHTML = '';
+    menuSections.forEach((sec, s)=>{
+        const b = document.createElement('div'); b.className='editor-block';
+        b.innerHTML = `<label>Section Name</label><input value="${sec.title}" oninput="menuSections[${s}].title=this.value;renderMenu()">
+            ${sec.items.map((it,i)=>`
+                <div style="border-top:1px solid #333; margin-top:10px; padding-top:10px;">
+                    <label>Product Name</label><input value="${it.name}" oninput="menuSections[${s}].items[${i}].name=this.value;renderMenu()">
+                    <label>Badge</label>
+                    <select onchange="menuSections[${s}].items[${i}].badge=this.value;renderMenu()">
+                        <option value="none">None</option><option value="scarcity">Scarcity</option><option value="hot">Hot Deal</option>
+                    </select>
+                    <label>Rating (1-5)</label><input type="number" value="${it.rating}" oninput="menuSections[${s}].items[${i}].rating=this.value;renderMenu()">
+                    <label>Price</label><input type="number" value="${it.price}" oninput="menuSections[${s}].items[${i}].price=this.value;renderMenu()">
+                    <label>Image URL</label><input value="${it.img}" oninput="menuSections[${s}].items[${i}].img=this.value;renderMenu()">
+                </div>`).join('')}
+            <button onclick="menuSections[${s}].items.push({name:'New',price:0,desc:'',img:'',rating:5,badge:'none'});renderEditor();renderMenu()">+ Add Item</button>`;
+        me.appendChild(b);
+    });
+}
+
+function addSection(){ menuSections.push({title:"New Section", items:[]}); renderEditor(); }
+
+document.addEventListener('DOMContentLoaded', () => { renderMenu(); renderEditor(); renderSalesLog(); });
+
+function downloadHTML(){
+    const doc = document.documentElement.cloneNode(true);
+    doc.querySelector('#editor').remove();
+    const script = Array.from(doc.querySelectorAll('script')).find(s => s.textContent.includes('menuSections ='));
+    script.textContent = script.textContent.replace(/let menuSections = \[.*\];/, `let menuSections = ${JSON.stringify(menuSections)};`);
+    const blob = new Blob([doc.outerHTML], {type:'text/html'});
+    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='MyStore.html'; a.click();
+}
+</script>
+</body>
+</html>
