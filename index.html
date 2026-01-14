@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Webstore Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e6e6e6}
+:root{--gold:#d4a373;--gold2:#f1b86b;--whatsapp:#25D366}
+
+header{
+  min-height:70vh; background-size:cover; background-position:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; position:relative; background-color: #111;
+}
+header::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+header *{position:relative;z-index:2}
+.logo{ max-width:160px; border-radius:16px; border:3px solid var(--gold); margin-bottom:1rem; }
+h1{font-family:'Bebas Neue', sans-serif; font-size:3.5rem; color:var(--gold); text-transform: uppercase;}
+.tagline{font-family:'Bebas Neue', sans-serif; color:var(--gold2); letter-spacing: 2px;}
+
+#menu{max-width:1200px;margin:auto;padding:3rem 5%}
+.section-title{ font-family:'Bebas Neue'; font-size:2.2rem; color:var(--gold); margin:2rem 0 1rem; border-bottom: 1px solid #333;}
+.menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+.menu-item{ background:#0f0f0f; border-radius:15px; border:1px solid #222; overflow:hidden; position: relative; transition: 0.3s; }
+.marketing-active .menu-item { border: 1px solid var(--gold); transform: translateY(-5px); }
+
+.badge { position: absolute; top: 15px; left: 15px; padding: 5px 12px; border-radius: 4px; font-family: 'Bebas Neue'; z-index: 4; text-transform: uppercase; font-size: 0.8rem;}
+.badge-scarcity { background: #ff0000; color: #fff; }
+.badge-hot { background: var(--gold); color: #000; }
+
+.share-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 5; cursor: pointer; }
+.status-btn { position: absolute; top: 10px; left: 10px; background: var(--whatsapp); color: #fff; border: none; padding: 6px 12px; border-radius: 20px; font-family: 'Bebas Neue'; cursor: pointer; z-index: 5; }
+
+.menu-item img{ width:100%; height:220px; object-fit:cover; }
+.card{padding:1.2rem}
+.price{font-family:'Bebas Neue'; color:var(--gold2); font-size:1.5rem; margin-top: 5px;}
+
+/* RECEIPT Area */
+.receipt-wrap { background: #fff; color: #000; padding: 30px; width: 350px; margin: auto; display: none; font-family: 'Courier New', monospace; border: 1px solid #ddd; }
+@media print { body * { display: none !important; } .receipt-wrap { display: block !important; } }
+
+#editor{ background:#111; padding:3rem 5%; border-top: 4px solid var(--gold); }
+.editor-block{ background:#1a1a1a; padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border: 1px solid #333; }
+label{display:block; margin-top:1rem; color:var(--gold); font-size: 0.7rem; text-transform: uppercase; font-weight: bold;}
+input, textarea, select{ width:100%; padding:12px; background:#222; border:1px solid #444; color:#fff; border-radius:6px; margin-top:5px; }
+button{ background:linear-gradient(to bottom, var(--gold), var(--gold2)); border:none; padding:12px 20px; border-radius:30px; font-family:'Bebas Neue'; font-size:1.1rem; cursor:pointer; margin-top:15px; color: #000; }
+
+#whatsappOrderBtn, .quote-btn{ position:fixed; right:20px; z-index:1000; font-family:'Bebas Neue'; text-decoration:none; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+#whatsappOrderBtn{ bottom:20px; background:var(--whatsapp); color:#000; padding:15px 25px; border-radius:50px; font-size: 1.3rem; }
+.quote-btn { bottom: 85px; background: #fff; color: #000; padding: 10px 20px; border-radius: 30px; border:none; font-size: 0.9rem; }
+
+footer{ padding:4rem 2rem; text-align:center; background: #050505; color: #555; border-top: 1px solid #222;}
+</style>
+</head>
+<body>
+
+<header id="header">
+  <img id="logo" class="logo" src="">
+  <h1 id="cafeName">BUSINESS NAME</h1>
+  <p id="tagline" class="tagline">YOUR TAGLINE HERE</p>
+</header>
+
+<section id="menu"><div id="menuRender"></div></section>
+
+<footer><p id="footerText">© 2026 YOUR BUSINESS NAME</p></footer>
+
+<div id="actionButtons"></div>
+
+<div id="editor">
+  <div class="editor-block">
+    <h2 style="font-family:'Bebas Neue'; color:var(--gold)">STYLING & BRANDING</h2>
+    <label>Business Name</label>
+    <input id="bizNameIn" oninput="document.getElementById('cafeName').textContent=this.value" placeholder="Business Name">
+    <label>Tagline</label>
+    <input id="taglineIn" oninput="document.getElementById('tagline').textContent=this.value" placeholder="Your Tagline">
+    <label>Footer Copyright</label>
+    <input id="footerIn" oninput="document.getElementById('footerText').textContent=this.value" placeholder="© 2026 Your Name">
+    
+    <label>Logo Image</label>
+    <input id="logoUrl" placeholder="Paste Image URL" oninput="document.getElementById('logo').src=this.value">
+    <input type="file" onchange="uploadFile(this, 'logo')">
+
+    <label>Header Banner</label>
+    <input id="bannerUrl" placeholder="Paste Banner URL" oninput="document.getElementById('header').style.backgroundImage='url('+this.value+')'">
+    <input type="file" onchange="uploadFile(this, 'banner')">
+
+    <label>WhatsApp Number</label>
+    <input id="waNum" value="+27660000000" oninput="whatsappNumber=this.value">
+
+    <label>Currency</label>
+    <select id="currSel" onchange="setCurrency(this.value)">
+      <option value="ZAR">South African Rand (R)</option>
+      <option value="INR">Indian Rupee (₹)</option>
+      <option value="USD">US Dollar ($)</option>
+      <option value="EUR">Euro (€)</option>
+      <option value="GBP">British Pound (£)</option>
+      <option value="NGN">Nigerian Naira (₦)</option>
+      <option value="KES">Kenyan Shilling (Ksh)</option>
+      <option value="AED">UAE Dirham (د.إ)</option>
+    </select>
+    <button onclick="toggleMarketing()" id="mktBtn" style="width:100%">⚡ ACTIVATE MARKETING MODE</button>
+  </div>
+
+  <div id="menuEditor"></div>
+  <button onclick="addSection()">+ ADD NEW SECTION</button>
+  <button onclick="downloadHTML()" style="width:100%; padding:20px; margin-top:40px;">💾 DOWNLOAD COMPLETE WEBSITE</button>
+</div>
+
+<div id="receiptArea" class="receipt-wrap">
+    <center><h2 id="r-biz"></h2><p id="r-date"></p></center>
+    <hr style="margin:15px 0; border: 0; border-top: 1px dashed #000;">
+    <div id="r-items" style="white-space: pre-wrap; line-height: 1.6;"></div>
+    <hr style="margin:15px 0; border: 0; border-top: 1px dashed #000;">
+    <h3 id="r-total" style="text-align:right"></h3>
+    <center><p style="margin-top:20px; font-size: 0.7rem;">Generated by TiffyAI Store Builder</p></center>
+</div>
+
+<canvas id="statusCanvas" width="1080" height="1920" style="display:none;"></canvas>
+
+<script>
+let whatsappNumber = "+27660000000";
+let marketingMode = false;
+let activeCurrency = "ZAR";
+let menuSections = [{ title: "Featured", items: [{ name: 'Sample Item', price: 150, desc: "Premium product description here.", img: "", badge: 'none', stock: 5 }] }];
+const orderState = {};
+const currencyMap = { ZAR:'R', INR:'₹', USD:'$', EUR:'€', GBP:'£', NGN:'₦', KES:'Ksh', AED:'د.إ' };
+
+function setCurrency(val){ activeCurrency=val; renderMenu(); renderEditor(); }
+
+function toggleMarketing(){
+    marketingMode = !marketingMode;
+    document.body.classList.toggle('marketing-active');
+    document.getElementById('mktBtn').textContent = marketingMode ? "🔥 MARKETING MODE LIVE" : "⚡ ACTIVATE MARKETING MODE";
+    renderMenu();
+}
+
+function uploadFile(input, type){
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        if(type === 'logo') { document.getElementById('logo').src = e.target.result; document.getElementById('logoUrl').value = e.target.result; }
+        else { document.getElementById('header').style.backgroundImage = `url(${e.target.result})`; document.getElementById('bannerUrl').value = e.target.result; }
+    };
+    reader.readAsDataURL(file);
+}
+
+function renderMenu(){
+    const container = document.getElementById('menuRender'); container.innerHTML = '';
+    const sym = currencyMap[activeCurrency];
+
+    menuSections.forEach((sec, sIdx) => {
+        const sectionHtml = `<h2 class="section-title">${sec.title}</h2>`;
+        const grid = document.createElement('div'); grid.className = 'menu-grid';
+        
+        sec.items.forEach((it, iIdx) => {
+            const key = `${sIdx}-${iIdx}`;
+            const qty = orderState[key] || 0;
+            const badgeHtml = (marketingMode && it.badge !== 'none') ? `<div class="badge badge-${it.badge}">${it.badge === 'scarcity' ? 'LOW STOCK' : it.badge}</div>` : '';
+            
+            grid.innerHTML += `
+                <div class="menu-item">
+                    ${badgeHtml}
+                    ${marketingMode ? `<button class="status-btn" onclick='makeStatus(${JSON.stringify(it)})'>📲 STATUS</button>
+                    <div class="share-btn" onclick="shareItem('${it.name}', ${it.price})">🔗</div>` : ''}
+                    <img src="${it.img || 'https://via.placeholder.com/400x300?text=No+Image'}">
+                    <div class="card">
+                        <h3>${it.name}</h3>
+                        <p style="font-size:0.85rem; color:#888; margin:5px 0;">${it.desc}</p>
+                        <div class="price">${it.price > 0 ? sym + it.price : 'NEGOTIABLE'}</div>
+                        <div style="margin-top:12px; display:flex; align-items:center; gap:15px;">
+                            <button onclick="updateQty('${key}', -1)" style="margin:0; width:35px; height:35px; border-radius:50%;">-</button>
+                            <span style="font-weight:bold; font-size:1.2rem;">${qty}</span>
+                            <button onclick="updateQty('${key}', 1)" style="margin:0; width:35px; height:35px; border-radius:50%;">+</button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML += sectionHtml;
+        container.appendChild(grid);
+    });
+    refreshCart();
+}
+
+function updateQty(key, delta){ 
+    orderState[key] = Math.max(0, (orderState[key] || 0) + delta); 
+    renderMenu(); 
+}
+
+function refreshCart(){
+    const totalItems = Object.values(orderState).reduce((a,b)=>a+b, 0);
+    const actionArea = document.getElementById('actionButtons');
+    actionArea.innerHTML = '';
+
+    if(totalItems > 0){
+        let receiptText = "";
+        let grandTotal = 0;
+        const sym = currencyMap[activeCurrency];
+
+        menuSections.forEach((sec, sIdx) => {
+            sec.items.forEach((it, iIdx) => {
+                const q = orderState[`${sIdx}-${iIdx}`];
+                if(q > 0) {
+                    const lineTotal = q * it.price;
+                    grandTotal += lineTotal;
+                    receiptText += `${q} x ${it.name} \n   ${sym}${lineTotal}\n`;
+                }
+            });
+        });
+
+        const waMsg = `🛍️ NEW ORDER FROM STORE\n\n${receiptText}\nTOTAL: ${sym}${grandTotal}\n\nLink: ${window.location.href}`;
+        
+        // Update Receipt Area for Printing
+        document.getElementById('r-biz').textContent = document.getElementById('cafeName').textContent;
+        document.getElementById('r-date').textContent = new Date().toLocaleString();
+        document.getElementById('r-items').textContent = receiptText;
+        document.getElementById('r-total').textContent = `TOTAL: ${sym}${grandTotal}`;
+
+        actionArea.innerHTML = `
+            <button class="quote-btn" onclick="window.print()">📄 PRINT QUOTE</button>
+            <a id="whatsappOrderBtn" href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMsg)}">ORDER VIA WHATSAPP (${totalItems})</a>
+        `;
+    }
+}
+
+function shareItem(name, price){
+    const sym = currencyMap[activeCurrency];
+    const text = `Check this out: ${name} for only ${sym}${price}!\n\nShop here: ${window.location.href}`;
+    if (navigator.share) {
+        navigator.share({ title: name, text: text, url: window.location.href });
+    } else {
+        navigator.clipboard.writeText(text);
+        alert("Link & Details copied to clipboard!");
+    }
+}
+
+function makeStatus(it){
+    const canvas = document.getElementById('statusCanvas'); const ctx = canvas.getContext('2d');
+    const biz = document.getElementById('cafeName').textContent;
+    const sym = currencyMap[activeCurrency];
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1920);
+    const img = new Image(); img.crossOrigin="anonymous"; img.src = it.img || 'https://via.placeholder.com/600';
+    img.onload = () => {
+        ctx.drawImage(img, 0, 300, 1080, 1080);
+        ctx.fillStyle="rgba(212,163,115,0.95)"; ctx.fillRect(0, 1400, 1080, 350);
+        ctx.fillStyle="#000"; ctx.textAlign="center";
+        ctx.font="bold 80px Arial"; ctx.fillText(it.name.toUpperCase(), 540, 1510);
+        ctx.font="110px Arial"; ctx.fillText(it.price > 0 ? sym + it.price : 'NEGOTIABLE', 540, 1650);
+        ctx.fillStyle="#fff"; ctx.font="45px Arial"; ctx.fillText(biz, 540, 1850);
+        const a = document.createElement('a'); a.download='flyer.png'; a.href=canvas.toDataURL(); a.click();
+    };
+}
+
+function renderEditor(){
+    const editor = document.getElementById('menuEditor'); editor.innerHTML = '';
+    menuSections.forEach((sec, sIdx) => {
+        const block = document.createElement('div'); block.className = 'editor-block';
+        block.innerHTML = `<label>Section Title</label><input value="${sec.title}" oninput="menuSections[${sIdx}].title=this.value;renderMenu()">
+        ${sec.items.map((it, iIdx) => `
+            <div style="border-top:1px solid #333; margin-top:20px; padding-top:10px;">
+                <label>Product Name</label><input value="${it.name}" oninput="menuSections[${sIdx}].items[${iIdx}].name=this.value;renderMenu()">
+                <label>Description</label><textarea oninput="menuSections[${sIdx}].items[${iIdx}].desc=this.value;renderMenu()">${it.desc}</textarea>
+                <label>Price (0 for Negotiable)</label><input type="number" value="${it.price}" oninput="menuSections[${sIdx}].items[${iIdx}].price=this.value;renderMenu()">
+                <label>Image URL</label><input value="${it.img}" oninput="menuSections[${sIdx}].items[${iIdx}].img=this.value;renderMenu()">
+                <label>Badge</label>
+                <select onchange="menuSections[${sIdx}].items[${iIdx}].badge=this.value;renderMenu()">
+                    <option value="none" ${it.badge=='none'?'selected':''}>None</option>
+                    <option value="scarcity" ${it.badge=='scarcity'?'selected':''}>Scarcity</option>
+                    <option value="hot" ${it.badge=='hot'?'selected':''}>Hot Deal</option>
+                </select>
+                <button onclick="menuSections[${sIdx}].items.splice(${iIdx},1);renderEditor();renderMenu()" style="background:#600; color:#fff; font-size:0.7rem;">Remove Item</button>
+            </div>`).join('')}
+        <button onclick="menuSections[${sIdx}].items.push({name:'New Item',price:0,desc:'',img:'',badge:'none'});renderEditor();renderMenu()">+ Add Item</button>`;
+        editor.appendChild(block);
+    });
+}
+
+function addSection(){ menuSections.push({title:"New Category", items:[]}); renderEditor(); renderMenu(); }
+
+function downloadHTML(){
+    const doc = document.documentElement.cloneNode(true);
+    doc.querySelector('#editor').remove();
+    const script = Array.from(doc.querySelectorAll('script')).find(s => s.textContent.includes('menuSections ='));
+    script.textContent = `let whatsappNumber = "${whatsappNumber}"; let activeCurrency = "${activeCurrency}"; let menuSections = ${JSON.stringify(menuSections)};` + script.textContent.split('let menuSections =')[1].split(';')[1];
+    const blob = new Blob(['<!DOCTYPE html>\n' + doc.outerHTML], { type: 'text/html' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'MyTiffyStore.html'; a.click();
+}
+
+document.addEventListener('DOMContentLoaded', () => { renderMenu(); renderEditor(); });
+</script>
+</body>
+</html>
